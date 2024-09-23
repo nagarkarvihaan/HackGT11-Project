@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MonoLens"
+rootProject.name = "MemoLens"
 include(":app")
+ 
