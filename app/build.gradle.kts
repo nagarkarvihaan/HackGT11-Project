@@ -37,12 +37,15 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
-    // Add CameraX dependencies
+    // CameraX dependencies
     implementation("androidx.camera:camera-camera2:1.3.4")
     implementation("androidx.camera:camera-lifecycle:1.3.4")
     implementation("androidx.camera:camera-view:1.3.0")
 
-    // Add Firebase
+    // Add ListenableFuture dependency for CameraX
+    implementation("androidx.concurrent:concurrent-futures:1.1.0")
+
+    // Firebase dependencies
     implementation("com.google.firebase:firebase-auth:21.1.0")
     implementation("com.google.firebase:firebase-firestore:24.1.2")
 
