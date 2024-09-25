@@ -22,7 +22,7 @@ def analyze():
         img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
         # Use DeepFace to analyze the image and compare it against a dataset
-        result = DeepFace.find(img_path=img, db_path="path/to/your/roboflow-dataset", model_name='VGG-Face')
+        result = DeepFace.find(img_path=img, db_path="path/to/roboflow-dataset", model_name='VGG-Face')
 
         # Return the recognized person (if any)
         if len(result) > 0:
