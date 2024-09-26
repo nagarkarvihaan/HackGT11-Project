@@ -25,6 +25,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        dataBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -37,11 +42,15 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
+    implementation(libs.fragment)
+
+    // Add CameraX dependencies
     // CameraX dependencies
     implementation("androidx.camera:camera-camera2:1.3.4")
     implementation("androidx.camera:camera-lifecycle:1.3.4")
     implementation("androidx.camera:camera-view:1.3.0")
 
+    // Add Firebase
     // Add ListenableFuture dependency for CameraX
     implementation("androidx.concurrent:concurrent-futures:1.1.0")
 
