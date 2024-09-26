@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageCapture imageCapture;
     private PreviewView previewView;
-    private Button captureButton;
+    private Button captureButton, buzzButton;
     private TextToSpeech tts;
 
     @Override
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize views
         previewView = findViewById(R.id.previewView);
         captureButton = findViewById(R.id.captureButton);
+        buzzButton = findViewById(R.id.buzzButton);  // Initialize the Buzz button
 
         // Initialize Text-to-Speech
         tts = new TextToSpeech(this, status -> {
@@ -68,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Capture button listener
         captureButton.setOnClickListener(v -> takePicture());
+
+        // Buzz button listener
+        buzzButton.setOnClickListener(v -> {
+            // Define what happens when the Buzz button is clicked
+            Toast.makeText(MainActivity.this, "Buzz Button Clicked!", Toast.LENGTH_SHORT).show();
+            // You can add any other action here (e.g., call a function or start an activity)
+        });
     }
 
     private void startCamera() {

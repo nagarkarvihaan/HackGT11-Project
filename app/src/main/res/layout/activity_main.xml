@@ -13,19 +13,37 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/captureButton"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Button to Capture Image -->
-    <Button
-        android:id="@+id/captureButton"
+    <!-- Button Layout -->
+    <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Capture"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/previewView"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previewView" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Buzz Button -->
+        <Button
+            android:id="@+id/buzzButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buzz"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Capture Button -->
+        <Button
+            android:id="@+id/captureButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Capture" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
