@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "467383959127",
+    "project_id": "memolens-5aa64",
+    "storage_bucket": "memolens-5aa64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467383959127:android:8e60ac47ecd43e7773ad12",
+        "android_client_info": {
+          "package_name": "com.example.memolens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ7VNUZ7mRhWHC991hFHxE4MFFulQ5_RE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

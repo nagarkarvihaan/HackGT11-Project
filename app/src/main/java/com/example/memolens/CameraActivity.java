@@ -1,11 +1,13 @@
 package com.example.memolens;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +43,7 @@ public class CameraActivity extends AppCompatActivity {
     private ImageCapture imageCapture;
     private PreviewView previewView;
     private Button captureButton;
+    private Button backButton;
     private TextToSpeech tts;
     ActivityCameraBinding binding;
 
@@ -53,6 +56,7 @@ public class CameraActivity extends AppCompatActivity {
         // Initialize views
         previewView = binding.previewView;
         captureButton = binding.captureButton;
+        backButton = binding.backMain;
 
         // Initialize Text-to-Speech
         tts = new TextToSpeech(this, status -> {
@@ -71,6 +75,13 @@ public class CameraActivity extends AppCompatActivity {
 
         // Capture button listener
         captureButton.setOnClickListener(v -> takePicture());
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void startCamera() {

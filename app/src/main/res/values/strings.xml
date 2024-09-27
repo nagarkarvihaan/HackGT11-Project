@@ -2,4 +2,7 @@
     <string name="app_name">MemoLens</string>
     <string name="camera">Camera</string>
     <string name="medications">Medications</string>
+    <string name="back">Back</string>
+    <string name="add_medication">Add Medication</string>
+    <string name="next">Next</string>
 </resources>
