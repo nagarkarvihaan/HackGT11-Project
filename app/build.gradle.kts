@@ -45,8 +45,6 @@ dependencies {
 
     implementation(libs.fragment)
 
-    implementation "androidx.core:core:2.2.0"
-
     // Add CameraX dependencies
     // CameraX dependencies
     implementation("androidx.camera:camera-camera2:1.3.4")

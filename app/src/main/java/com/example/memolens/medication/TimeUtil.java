@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class TimeUtil {
-    static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+    static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
     public static Calendar convertTimestampToDate(Timestamp timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp.getSeconds() * 1000);
