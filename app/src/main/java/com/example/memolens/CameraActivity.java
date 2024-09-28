@@ -155,7 +155,7 @@ public class CameraActivity extends AppCompatActivity {
                 jsonParam.put("image", base64Image);
 
                 // Setup the HTTP connection
-                URL url = new URL("http://your-server-ip:5000/analyze");  // Replace with your Flask server URL
+                URL url = new URL("http://10.91.69.68:5000/analyze");  // Replace with your Flask server URL
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
