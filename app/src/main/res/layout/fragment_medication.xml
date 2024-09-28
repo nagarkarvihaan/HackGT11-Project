@@ -4,80 +4,274 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/backgroundWhite">
 
-        <Button
+
+        <ImageButton
+            android:contentDescription="@string/add_medication"
             android:id="@+id/addMedication"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:text="@string/add_medication"
+            android:layout_width="54dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/backgroundWhite"
+            android:src="@drawable/baseline_add_circle_outline_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/medicationCount" />
-
-        <TextView
-            android:id="@+id/medicationTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/medications"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/currentMedication"
+            android:id="@+id/medicationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:text="TextView"
-            android:clickable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/medicationTitle" />
+            android:layout_marginTop="8dp"
+            android:text="@string/medications"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/textGrey"
+            app:layout_constraintEnd_toStartOf="@+id/addMedication"
+            app:layout_constraintStart_toEndOf="@+id/backMain"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/medicationCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
-            android:text="TextView"
+            android:text="Medication Count"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/nextButton"
             app:layout_constraintStart_toEndOf="@+id/prevButton"
             app:layout_constraintTop_toBottomOf="@+id/currentMedication" />
 
-        <Button
+        <ImageButton
+            android:contentDescription="next medication"
             android:id="@+id/nextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="32dp"
-            android:text="@string/next"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currentMedication" />
-
-        <Button
-            android:id="@+id/prevButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="40dp"
-            android:text="@string/back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currentMedication" />
-
-        <Button
-            android:id="@+id/backMain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="204dp"
-            android:text="@string/back"
+            android:layout_width="54dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/backgroundWhite"
+            android:src="@drawable/baseline_chevron_right_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.475"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:contentDescription="previous medication"
+            android:id="@+id/prevButton"
+            android:layout_width="54dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/backgroundWhite"
+            android:src="@drawable/baseline_chevron_left_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:contentDescription="back"
+            android:id="@+id/backMain"
+            android:layout_width="54dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/backgroundWhite"
+            android:padding="8dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/currentMedication"
+            android:layout_width="500dp"
+            android:layout_height="250dp"
+            app:cardBackgroundColor="@color/softBlue"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/nextButton"
+            app:layout_constraintStart_toEndOf="@+id/prevButton"
+            app:layout_constraintTop_toTopOf="@+id/medicationText">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/medicationTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:paddingStart="20dp"
+                    android:text="MedicationTitle"
+                    android:textColor="@color/textGrey"
+                    android:textSize="25sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:dividerColor="@color/black"
+                    app:dividerThickness="2dp" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:showDividers="middle">
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content">
+                        <TextView
+                            android:layout_width="125dp"
+                            android:layout_height="match_parent"
+                            android:text="Dosage:"
+                            android:textSize="25sp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:gravity="center"
+                            android:layout_weight="1"/>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            app:dividerThickness="2dp"
+                            app:dividerColor="@color/black"
+                            />
+
+                        <TextView
+                            android:id="@+id/dosageText"
+                            android:layout_height="match_parent"
+                            android:layout_width="125dp"
+                            android:text="Example Dosage"
+                            android:textSize="25sp"
+                            android:gravity="center"
+                            android:layout_weight="1"/>
+
+                    </TableRow>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:dividerColor="@color/black"
+                        app:dividerThickness="2dp"/>
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content">
+                        <TextView
+                            android:layout_width="125dp"
+                            android:layout_height="match_parent"
+                            android:text="Take every:"
+                            android:textSize="25sp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:gravity="center"
+                            android:layout_weight="1"/>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            app:dividerThickness="2dp"
+                            app:dividerColor="@color/black"
+                            />
+
+                        <TextView
+                            android:id="@+id/intervalText"
+                            android:layout_height="match_parent"
+                            android:layout_width="125dp"
+                            android:text="Example interval"
+                            android:textSize="25sp"
+                            android:gravity="center"
+                            android:layout_weight="1"/>
+
+                    </TableRow>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:dividerColor="@color/black"
+                        app:dividerThickness="2dp"/>
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content">
+                        <TextView
+                            android:layout_width="125dp"
+                            android:layout_height="match_parent"
+                            android:text="Last time taken:"
+                            android:textSize="25sp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:gravity="center"
+                            android:layout_weight="1"/>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            app:dividerThickness="2dp"
+                            app:dividerColor="@color/black"
+                            />
+
+                        <TextView
+                            android:id="@+id/lastTimeTakenText"
+                            android:layout_height="match_parent"
+                            android:layout_width="125dp"
+                            android:text="Example time"
+                            android:textSize="20sp"
+                            android:gravity="center"
+                            android:layout_weight="1"/>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            app:dividerThickness="2dp"
+                            app:dividerColor="@color/black"
+                            />
+
+                        <Button
+                            android:id="@+id/updateTaken"
+                            android:layout_height="match_parent"
+                            android:layout_width="125dp"
+                            android:backgroundTint="@color/buttonGreen"
+                            android:text="Just took Medicine"
+                            android:textColor="@color/textGrey"/>
+                    </TableRow>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:dividerColor="@color/black"
+                        app:dividerThickness="2dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Instructions:"
+                            android:textSize="25sp"
+                            android:gravity="center"/>
+
+                        <TextView
+                            android:id="@+id/instructionsText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingStart="4dp"
+                            android:text="Instructions"
+                            android:textSize="20sp"/>
+                    </LinearLayout>
+
+                </TableLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

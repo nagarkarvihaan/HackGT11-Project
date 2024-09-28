@@ -14,15 +14,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -50,8 +54,12 @@ public class MedicationFragment extends Fragment {
 
     FragmentMedicationBinding binding;
     FirebaseFirestore db;
-    Button next, back, addMedication, backMain;
-    TextView medicationCount, curMedication;
+    ImageButton next;
+    ImageButton back;
+    ImageButton addMedication;
+    ImageButton backMain;
+    TextView medicationCount;
+    CardView curMedication;
     int cur = 0;
     List<Medication> medicationList = new ArrayList<>();
     @Override
@@ -144,11 +152,12 @@ public class MedicationFragment extends Fragment {
                 dpd.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
                 dpd.show();
             }
+
         });
 
         Button saveButton = (Button) promptView.findViewById(R.id.saveMedication);
-        Button deleteButton = (Button) promptView.findViewById(R.id.deleteMedication);
-        Button backButton = (Button) promptView.findViewById(R.id.backButton);
+        ImageButton deleteButton = (ImageButton) promptView.findViewById(R.id.deleteMedication);
+        ImageButton backButton = (ImageButton) promptView.findViewById(R.id.backButton);
         if (adding) {
             deleteButton.setVisibility(View.INVISIBLE);
             deleteButton.setClickable(false);
@@ -182,6 +191,17 @@ public class MedicationFragment extends Fragment {
 
         alertD.setView(promptView);
         alertD.show();
+
+        // Modify the dialog width
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(alertD.getWindow().getAttributes());
+
+        // Set the width as a percentage of the screen width
+        layoutParams.width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.95); // 90% of screen width
+        layoutParams.height = (int) (getContext().getResources().getDisplayMetrics().heightPixels * 0.95); // 90% of screen width
+
+        // Apply the updated layout parameters
+        alertD.getWindow().setAttributes(layoutParams);
     }
 
     public void confirmAndDelete(AlertDialog alertD) {
@@ -309,12 +329,31 @@ public class MedicationFragment extends Fragment {
 
     public void displayMedication(int offset) {
         if (medicationList.size() == 0) {
-            curMedication.setText("No medications");
+            binding.medicationTitle.setText("No Medications");
             medicationCount.setText("0 of 0");
             return;
         }
         cur = (cur + offset + medicationList.size()) % medicationList.size();
-        curMedication.setText(medicationList.get(cur).name);
+        Medication currentMedication = medicationList.get(cur);
+
+        binding.dosageText.setText(currentMedication.dosage);
+        if (currentMedication.interval == 1) {
+            binding.intervalText.setText("Every " + currentMedication.interval + " hour");
+        } else {
+            binding.intervalText.setText("Every " + currentMedication.interval + " hours");
+        }
+
+        Calendar timestampDate = TimeUtil.convertTimestampToDate(currentMedication.lastTaken);
+        String timestampString = TimeUtil.convertDateToString(timestampDate);
+
+        binding.lastTimeTakenText.setText(timestampString);
+        binding.medicationTitle.setText(currentMedication.name);
+        if (currentMedication.instructions != "") {
+            binding.instructionsText.setText(currentMedication.instructions);
+        } else {
+            binding.instructionsText.setText("No instructions listed.");
+        }
+
         setMedicationCount();
     }
 
@@ -337,7 +376,6 @@ public class MedicationFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
     public String getEditTextValue(View v) {
