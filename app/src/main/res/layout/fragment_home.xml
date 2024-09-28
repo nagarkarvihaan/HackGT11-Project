@@ -5,7 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".HomeFragment">
+        tools:context=".HomeFragment"
+        android:background="@color/backgroundWhite">
 
         <Button
             android:id="@+id/camera_button"
@@ -13,6 +14,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="108dp"
             android:text="@string/camera"
+            android:textColor="@color/textGrey"
+            android:backgroundTint="@color/softBlue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -23,6 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="76dp"
             android:text="@string/medications"
+            android:textColor="@color/textGrey"
+            android:backgroundTint="@color/softBlue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/camera_button" />

@@ -9,9 +9,11 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -24,9 +26,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -114,6 +118,47 @@ public class MedicationFragment extends Fragment {
                 transaction.replace(R.id.fragment_container_view, homeFragment );
                 transaction.addToBackStack(null);
                 transaction.commit();
+            }
+        });
+
+        //Adding on focus
+        backMain.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
+            } else {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
+            }
+        });
+
+        next.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
+            } else {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
+            }
+        });
+
+        back.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
+            } else {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
+            }
+        });
+
+        curMedication.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.setElevation(10);
+            } else {
+                v.setElevation(0);
+            }
+        });
+
+        addMedication.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
+            } else {
+                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
             }
         });
 
