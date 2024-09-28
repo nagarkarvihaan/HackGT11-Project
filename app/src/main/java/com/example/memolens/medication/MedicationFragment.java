@@ -1,16 +1,23 @@
 package com.example.memolens.medication;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +43,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class MedicationFragment extends Fragment {
     final String COLLECTION_PATH = "Medications";
+    final DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+
     FragmentMedicationBinding binding;
     FirebaseFirestore db;
     Button next, back, addMedication, backMain;
@@ -78,9 +87,6 @@ public class MedicationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showDialog();
-//                Medication newMed = addNewMedication();
-                //medicationList.add(cur, newMed);
-                //displayMedication(0);
             }
         });
 
@@ -102,32 +108,51 @@ public class MedicationFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public Medication createMedication(String name, String dosage, String instructions,
-                                       String interval, String lastTaken) {
-        return medicationList.get(0);
-    }
+
 
     public void showDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View promptView = layoutInflater.inflate(R.layout.medication_dialog, null);
 
         final AlertDialog alertD = new AlertDialog.Builder(getContext()).create();
+        final AtomicBoolean isDateSet = new AtomicBoolean(false);
+        EditText lastTakenView = ((TextInputLayout) promptView.findViewById(R.id.lastTaken)).getEditText();
+        Calendar date = Calendar.getInstance();
+        lastTakenView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar currentDate = Calendar.getInstance();
+                DatePickerDialog dpd = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        isDateSet.set(true);
+                        date.set(year, monthOfYear, dayOfMonth);
+                        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                date.set(Calendar.MINUTE, minute);
+                                lastTakenView.setText(TimeUtil.convertDateToString(date));
+                            }
+                        }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+                    }
+                }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+                dpd.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
+                dpd.show();
+            }
+        });
 
         Button saveButton = (Button) promptView.findViewById(R.id.saveMedication);
         Button deleteButton = (Button) promptView.findViewById(R.id.deleteMedication);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String name = getEditTextValue(promptView.findViewById(R.id.name));
-                String dosage = getEditTextValue(promptView.findViewById(R.id.dosage));
-                String instructions = getEditTextValue(promptView.findViewById(R.id.instructions));
-                String interval = getEditTextValue(promptView.findViewById(R.id.interval));
-                String lastTaken = getEditTextValue(promptView.findViewById(R.id.lastTaken));
-
-                Log.d("HERE", name + " " + dosage + " " + instructions + " " + interval + " " + lastTaken);
-                Medication med = createMedication(name, dosage, instructions, interval, lastTaken);
-                setMedication(med, name);
-                alertD.dismiss();
+                Medication med = validateMedication(promptView, date, isDateSet);
+                if (med != null) {
+                    String name = getEditTextValue(promptView.findViewById(R.id.name));
+                    setMedication(med, name);
+                    alertD.dismiss();
+                }
             }
         });
 
@@ -140,13 +165,61 @@ public class MedicationFragment extends Fragment {
         alertD.show();
     }
 
+    public Medication validateMedication(View promptView, Calendar date, AtomicBoolean isDateSet) {
+        boolean valid = true;
+        String name = getEditTextValue(promptView.findViewById(R.id.name));
+        if (name.isBlank()) {
+            valid = false;
+            setError(promptView.findViewById(R.id.name), "Name cannot be empty");
+        }
+        String dosage = getEditTextValue(promptView.findViewById(R.id.dosage));
+        if (dosage.isBlank()) {
+            valid = false;
+            setError(promptView.findViewById(R.id.dosage), "Dosage cannot be empty");
+        }
+        String instructions = getEditTextValue(promptView.findViewById(R.id.instructions));
+        String intervalStr = getEditTextValue(promptView.findViewById(R.id.interval));
+        try {
+            if (intervalStr.isBlank()) {
+                throw new Exception();
+            }
+            Long.parseLong(intervalStr);
+        } catch (Exception e) {
+            valid = false;
+            setError(promptView.findViewById(R.id.interval), "Interval must be an integer number of hours");
+        }
+        if (date == null) {
+            valid = false;
+            setError(promptView.findViewById(R.id.lastTaken), "Date must be set");
+        }
+        if (!isDateSet.get()) {
+            valid = false;
+            setError(promptView.findViewById(R.id.lastTaken), "Date cannot be blank");
+        }
+        if (date.compareTo(Calendar.getInstance()) > 0) {
+            valid = false;
+            setError(promptView.findViewById(R.id.lastTaken), "Date cannot be in the future");
+        }
+        if (!valid) {
+            return null;
+        }
+        Medication med = Medication.createMedication(name, dosage, instructions, Long.parseLong(intervalStr),
+                TimeUtil.convertDateToTimestamp(date));
+        return med;
+    }
+
+    public void setError(View v, String errorMessage) {
+        ((TextInputLayout) v).setError(errorMessage);
+    }
+
     public void setMedication(Medication med, String documentName) {
-        Log.d("NAME", documentName);
         db.collection(COLLECTION_PATH).document(documentName)
                 .set(med.getMap())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        medicationList.add(cur, med);
+                        displayMedication(0);
                         Toast.makeText(getContext(), "Medication updated", Toast.LENGTH_SHORT).show();
                     }
                 })

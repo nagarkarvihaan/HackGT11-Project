@@ -78,7 +78,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Interval (in days)"
+            android:hint="Interval (in hours)"
             android:inputType="number"
             android:textSize="14dp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -96,6 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Last Taken"
+            android:clickable="true"
+            android:focusable="false"
             android:inputType="datetime"
             android:textSize="14dp" />
     </com.google.android.material.textfield.TextInputLayout>

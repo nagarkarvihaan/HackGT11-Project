@@ -25,4 +25,15 @@ public class Medication {
         map.put("last-taken", lastTaken);
         return map;
     }
+
+    public static Medication createMedication(String n, String d, String i,
+                                       long inter, Timestamp last) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("dosage", d);
+        map.put("instructions", i);
+        map.put("name", n);
+        map.put("interval", inter);
+        map.put("last-taken", last);
+        return new Medication(map);
+    }
 }
