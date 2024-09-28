@@ -18,7 +18,10 @@
             android:background="@color/backgroundWhite"
             android:src="@drawable/baseline_add_circle_outline_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@+id/nextButton" />
 
         <TextView
             android:id="@+id/medicationText"
@@ -51,11 +54,14 @@
             android:layout_width="54dp"
             android:layout_height="56dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/backgroundWhite"
+            android:backgroundTint="@color/backgroundWhite"
             android:src="@drawable/baseline_chevron_right_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true"
+            android:nextFocusLeft="@+id/updateTaken"
+            android:nextFocusRight="@+id/addMedication"/>
 
         <ImageButton
             android:contentDescription="previous medication"
@@ -67,7 +73,11 @@
             android:src="@drawable/baseline_chevron_left_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@+id/backMain"
+            android:nextFocusRight="@+id/currentMedication"/>
 
         <ImageButton
             android:contentDescription="back"
@@ -80,7 +90,10 @@
             android:padding="8dp"
             android:src="@drawable/baseline_arrow_back_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusRight="@+id/prevButton"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/currentMedication"
@@ -92,7 +105,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/nextButton"
             app:layout_constraintStart_toEndOf="@+id/prevButton"
-            app:layout_constraintTop_toTopOf="@+id/medicationText">
+            app:layout_constraintTop_toTopOf="@+id/medicationText"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@+id/prevButton"
+            android:nextFocusRight="@+id/updateTaken">
+
+            <requestFocus />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -244,7 +263,11 @@
                             android:layout_width="125dp"
                             android:backgroundTint="@color/buttonGreen"
                             android:text="Just took Medicine"
-                            android:textColor="@color/textGrey"/>
+                            android:textColor="@color/textGrey"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:nextFocusLeft="@+id/currentMedication"
+                            android:nextFocusRight="@+id/nextButton"/>
                     </TableRow>
 
                     <com.google.android.material.divider.MaterialDivider
