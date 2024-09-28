@@ -129,6 +129,7 @@
                             android:layout_width="125dp"
                             android:layout_height="match_parent"
                             android:text="Dosage:"
+                            android:textColor="@color/textGrey"
                             android:textSize="25sp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -147,6 +148,7 @@
                             android:layout_height="match_parent"
                             android:layout_width="125dp"
                             android:text="Example Dosage"
+                            android:textColor="@color/textGrey"
                             android:textSize="25sp"
                             android:gravity="center"
                             android:layout_weight="1"/>
@@ -167,6 +169,7 @@
                             android:layout_height="match_parent"
                             android:text="Take every:"
                             android:textSize="25sp"
+                            android:textColor="@color/textGrey"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:gravity="center"
@@ -184,6 +187,7 @@
                             android:layout_height="match_parent"
                             android:layout_width="125dp"
                             android:text="Example interval"
+                            android:textColor="@color/textGrey"
                             android:textSize="25sp"
                             android:gravity="center"
                             android:layout_weight="1"/>
@@ -203,6 +207,7 @@
                             android:layout_width="125dp"
                             android:layout_height="match_parent"
                             android:text="Last time taken:"
+                            android:textColor="@color/textGrey"
                             android:textSize="25sp"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -221,6 +226,7 @@
                             android:layout_height="match_parent"
                             android:layout_width="125dp"
                             android:text="Example time"
+                            android:textColor="@color/textGrey"
                             android:textSize="20sp"
                             android:gravity="center"
                             android:layout_weight="1"/>
@@ -256,6 +262,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Instructions:"
+                            android:textColor="@color/textGrey"
                             android:textSize="23sp"
                             android:gravity="center"/>
 
@@ -267,6 +274,7 @@
                             android:layout_marginHorizontal="8dp"
                             android:layout_marginBottom="3dp"
                             android:text="Instructions"
+                            android:textColor="@color/textGrey"
                             android:textSize="18sp"/>
                     </LinearLayout>
 
