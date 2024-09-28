@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +41,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.units.qual.A;
 
 public class MedicationFragment extends Fragment {
     final String COLLECTION_PATH = "Medications";
@@ -83,15 +86,16 @@ public class MedicationFragment extends Fragment {
         });
 
         addMedication = binding.addMedication;
-        addMedication.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog();
-            }
-        });
+        addMedication.setOnClickListener(v -> showDialog(true));
 
         medicationCount = binding.medicationCount;
         curMedication = binding.currentMedication;
+        curMedication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(false);
+            }
+        });
 
         backMain = binding.backMain;
         backMain.setOnClickListener(new View.OnClickListener() {
@@ -110,12 +114,12 @@ public class MedicationFragment extends Fragment {
 
 
 
-    public void showDialog() {
+    public void showDialog(boolean adding) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View promptView = layoutInflater.inflate(R.layout.medication_dialog, null);
 
         final AlertDialog alertD = new AlertDialog.Builder(getContext()).create();
-        final AtomicBoolean isDateSet = new AtomicBoolean(false);
+        final AtomicBoolean isDateSet = new AtomicBoolean(!adding);
         EditText lastTakenView = ((TextInputLayout) promptView.findViewById(R.id.lastTaken)).getEditText();
         Calendar date = Calendar.getInstance();
         lastTakenView.setOnClickListener(new View.OnClickListener() {
@@ -144,13 +148,20 @@ public class MedicationFragment extends Fragment {
 
         Button saveButton = (Button) promptView.findViewById(R.id.saveMedication);
         Button deleteButton = (Button) promptView.findViewById(R.id.deleteMedication);
+        Button backButton = (Button) promptView.findViewById(R.id.backButton);
+        if (adding) {
+            deleteButton.setVisibility(View.INVISIBLE);
+            deleteButton.setClickable(false);
+        } else {
+            fillInFields(promptView);
+        }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Medication med = validateMedication(promptView, date, isDateSet);
                 if (med != null) {
                     String name = getEditTextValue(promptView.findViewById(R.id.name));
-                    setMedication(med, name);
+                    setMedication(med, name, adding);
                     alertD.dismiss();
                 }
             }
@@ -158,11 +169,72 @@ public class MedicationFragment extends Fragment {
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                confirmAndDelete(alertD);
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+            }
+        });
+
         alertD.setView(promptView);
         alertD.show();
+    }
+
+    public void confirmAndDelete(AlertDialog alertD) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Confirm deletion of the medicine");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteMedication();
+                dialog.dismiss();
+                alertD.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void deleteMedication() {
+        Medication currentMedication = medicationList.get(cur);
+        db.collection(COLLECTION_PATH).document(currentMedication.name)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        medicationList.remove(cur);
+                        displayMedication(-1);
+                        Toast.makeText(getContext(), currentMedication.name + " deleted from list", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), currentMedication.name + "could not be deleted from list", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void fillInFields(View promptView) {
+        EditText nameView = ((TextInputLayout) promptView.findViewById(R.id.name)).getEditText();
+        EditText dosageView = ((TextInputLayout) promptView.findViewById(R.id.dosage)).getEditText();
+        EditText instructionsView = ((TextInputLayout) promptView.findViewById(R.id.instructions)).getEditText();
+        EditText intervalStrView = ((TextInputLayout) promptView.findViewById(R.id.interval)).getEditText();
+        EditText lastTakenView = ((TextInputLayout) promptView.findViewById(R.id.lastTaken)).getEditText();
+
+        Medication currentMedication = medicationList.get(cur);
+        nameView.setText(currentMedication.name);
+        dosageView.setText(currentMedication.dosage);
+        instructionsView.setText(currentMedication.instructions);
+        intervalStrView.setText(String.valueOf(currentMedication.interval));
+        lastTakenView.setText(TimeUtil.convertDateToString(TimeUtil.convertTimestampToDate(currentMedication.lastTaken)));
     }
 
     public Medication validateMedication(View promptView, Calendar date, AtomicBoolean isDateSet) {
@@ -212,13 +284,17 @@ public class MedicationFragment extends Fragment {
         ((TextInputLayout) v).setError(errorMessage);
     }
 
-    public void setMedication(Medication med, String documentName) {
+    public void setMedication(Medication med, String documentName, boolean adding) {
         db.collection(COLLECTION_PATH).document(documentName)
                 .set(med.getMap())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        medicationList.add(cur, med);
+                        if (adding) {
+                            medicationList.add(cur, med);
+                        } else {
+                            medicationList.set(cur, med);
+                        }
                         displayMedication(0);
                         Toast.makeText(getContext(), "Medication updated", Toast.LENGTH_SHORT).show();
                     }
