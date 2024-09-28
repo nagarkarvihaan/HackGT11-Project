@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,7 +32,10 @@ public class MedicationFragment extends Fragment {
 
     FragmentMedicationBinding binding;
     FirebaseFirestore db;
-    Button next, back, addMedication, backMain;
+    ImageButton next;
+    ImageButton back;
+    ImageButton addMedication;
+    ImageButton backMain;
     TextView medicationCount, curMedication;
     int cur = 0;
     List<Medication> medicationList = new ArrayList<>();
@@ -67,7 +71,6 @@ public class MedicationFragment extends Fragment {
         });
         addMedication = binding.addMedication;
         medicationCount = binding.medicationCount;
-        curMedication = binding.currentMedication;
 
         backMain = binding.backMain;
         backMain.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +89,18 @@ public class MedicationFragment extends Fragment {
 
     public void displayMedication(int offset) {
         cur = (cur + offset + medicationList.size()) % medicationList.size();
-        curMedication.setText(medicationList.get(cur).name);
+        Medication currentMedication = medicationList.get(cur);
+
+        //todo: Update each field in table view
+        binding.dosageText.setText("Every" + currentMedication.dosage + " hours");
+        binding.lastTimeTakenText.setText(currentMedication.lastTaken.toString());
+        binding.medicationTitle.setText(currentMedication.name);
+        if (currentMedication.instructions != "") {
+            binding.instructionsText.setText(currentMedication.instructions);
+        } else {
+            binding.instructionsText.setText("No instructions listed.");
+        }
+
         setMedicationCount();
     }
 
@@ -112,7 +126,6 @@ public class MedicationFragment extends Fragment {
                         }
                     }
                 });
-
     }
 
     public void onStop() {
