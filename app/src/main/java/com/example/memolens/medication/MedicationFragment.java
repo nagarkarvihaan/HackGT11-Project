@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.DatePicker;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -56,7 +58,8 @@ public class MedicationFragment extends Fragment {
     ImageButton back;
     ImageButton addMedication;
     ImageButton backMain;
-    TextView medicationCount, curMedication;
+    TextView medicationCount;
+    CardView curMedication;
     int cur = 0;
     List<Medication> medicationList = new ArrayList<>();
     @Override
@@ -149,11 +152,12 @@ public class MedicationFragment extends Fragment {
                 dpd.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
                 dpd.show();
             }
+
         });
 
         Button saveButton = (Button) promptView.findViewById(R.id.saveMedication);
-        Button deleteButton = (Button) promptView.findViewById(R.id.deleteMedication);
-        Button backButton = (Button) promptView.findViewById(R.id.backButton);
+        ImageButton deleteButton = (ImageButton) promptView.findViewById(R.id.deleteMedication);
+        ImageButton backButton = (ImageButton) promptView.findViewById(R.id.backButton);
         if (adding) {
             deleteButton.setVisibility(View.INVISIBLE);
             deleteButton.setClickable(false);
@@ -187,6 +191,16 @@ public class MedicationFragment extends Fragment {
 
         alertD.setView(promptView);
         alertD.show();
+
+        // Modify the dialog width
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(alertD.getWindow().getAttributes());
+
+        // Set the width as a percentage of the screen width
+        layoutParams.width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9); // 90% of screen width
+
+        // Apply the updated layout parameters
+        alertD.getWindow().setAttributes(layoutParams);
     }
 
     public void confirmAndDelete(AlertDialog alertD) {
@@ -314,16 +328,24 @@ public class MedicationFragment extends Fragment {
 
     public void displayMedication(int offset) {
         if (medicationList.size() == 0) {
-            curMedication.setText("No medications");
+            binding.medicationTitle.setText("No Medications");
             medicationCount.setText("0 of 0");
             return;
         }
         cur = (cur + offset + medicationList.size()) % medicationList.size();
         Medication currentMedication = medicationList.get(cur);
 
-        //todo: Update each field in table view
-        binding.dosageText.setText("Every" + currentMedication.dosage + " hours");
-        binding.lastTimeTakenText.setText(currentMedication.lastTaken.toString());
+        binding.dosageText.setText(currentMedication.dosage);
+        if (currentMedication.interval == 1) {
+            binding.intervalText.setText("Every " + currentMedication.interval + " hour");
+        } else {
+            binding.intervalText.setText("Every " + currentMedication.interval + " hours");
+        }
+
+        Calendar timestampDate = TimeUtil.convertTimestampToDate(currentMedication.lastTaken);
+        String timestampString = TimeUtil.convertDateToString(timestampDate);
+
+        binding.lastTimeTakenText.setText(timestampString);
         binding.medicationTitle.setText(currentMedication.name);
         if (currentMedication.instructions != "") {
             binding.instructionsText.setText(currentMedication.instructions);
