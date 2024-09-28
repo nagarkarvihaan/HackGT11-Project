@@ -197,7 +197,8 @@ public class MedicationFragment extends Fragment {
         layoutParams.copyFrom(alertD.getWindow().getAttributes());
 
         // Set the width as a percentage of the screen width
-        layoutParams.width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.9); // 90% of screen width
+        layoutParams.width = (int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.95); // 90% of screen width
+        layoutParams.height = (int) (getContext().getResources().getDisplayMetrics().heightPixels * 0.95); // 90% of screen width
 
         // Apply the updated layout parameters
         alertD.getWindow().setAttributes(layoutParams);
