@@ -227,6 +227,17 @@ public class MedicationFragment extends Fragment {
             }
         });
 
+        deleteButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
+                } else {
+                    v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
+                }
+            }
+        });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
