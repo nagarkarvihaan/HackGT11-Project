@@ -5,9 +5,10 @@ import com.google.firebase.Timestamp;
 import java.util.*;
 
 public class Medication {
-    String dosage, instructions, name;
-    Timestamp lastTaken;
-    long interval;
+    public String dosage, instructions, name;
+    public Timestamp lastTaken;
+    public long interval;
+    public int id = -1;
     public Medication(Map<String, Object> map) {
         dosage = (String) map.get("dosage");
         instructions = (String) map.get("instructions");
@@ -24,6 +25,15 @@ public class Medication {
         map.put("interval", interval);
         map.put("last-taken", lastTaken);
         return map;
+    }
+
+    public void createId(Set<Integer> set) {
+        Random random = new Random();
+        do {
+            id = random.nextInt(Integer.MAX_VALUE);
+        } while (set.contains(id));
+
+        set.add(id);
     }
 
     public static Medication createMedication(String n, String d, String i,

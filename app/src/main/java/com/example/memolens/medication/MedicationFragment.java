@@ -9,11 +9,9 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -26,16 +24,16 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.memolens.HomeFragment;
+import com.example.memolens.Notifications.AlarmScheduler;
 import com.example.memolens.R;
+import com.example.memolens.TimeUtil;
 import com.example.memolens.databinding.FragmentMedicationBinding;
 import com.example.memolens.firebase.FirestoreCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,35 +41,32 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.checkerframework.checker.units.qual.A;
 
 public class MedicationFragment extends Fragment {
     final String COLLECTION_PATH = "Medications";
     final DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm");
-
+    AlarmScheduler alarmScheduler;
     FragmentMedicationBinding binding;
     FirebaseFirestore db;
     ImageButton next;
     ImageButton back;
     ImageButton addMedication;
     ImageButton backMain;
+    Button updateTaken;
     TextView medicationCount;
     CardView curMedication;
     int cur = 0;
     List<Medication> medicationList = new ArrayList<>();
+    Set<Integer> usedIds = new HashSet<>();
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentMedicationBinding.inflate(getLayoutInflater());
         db = FirebaseFirestore.getInstance();
-
+        alarmScheduler = new AlarmScheduler();
         next = binding.nextButton;
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +88,12 @@ public class MedicationFragment extends Fragment {
                 for (DocumentSnapshot document : documents) {
                     medicationList.add(new Medication(document.getData()));
                 }
+                if (getArguments() != null) {
+                    String toFind = (String) getArguments().get("med-name");
+                    cur = find(toFind);
+                }
                 displayMedication(0);
+                createReminders();
             }
         });
 
@@ -121,51 +121,46 @@ public class MedicationFragment extends Fragment {
             }
         });
 
-        //Adding on focus
-        backMain.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
-            } else {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
-            }
-        });
-
-        next.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
-            } else {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
-            }
-        });
-
-        back.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
-            } else {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
-            }
-        });
-
-        curMedication.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                v.setElevation(10);
-            } else {
-                v.setElevation(0);
-            }
-        });
-
-        addMedication.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.black));
-            } else {
-                v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.backgroundWhite));
+        updateTaken = binding.updateTaken;
+        updateTaken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateLastTaken();
             }
         });
 
         return binding.getRoot();
     }
 
+    public int find(String target) {
+        for (int i = 0; i < medicationList.size(); i++) {
+            if (medicationList.get(i).name.equals(target)) {
+                return i;
+            }
+        }
+        return 0;
+    }
 
+    public void createReminders() {
+        for (Medication med: medicationList) {
+            if (med.id != -1) {
+                usedIds.add(med.id);
+            }
+        }
+        for (Medication med: medicationList) {
+            if (med.id == -1) {
+                med.createId(usedIds);
+                usedIds.add(med.id);
+            }
+            alarmScheduler.scheduleReminder(getContext(), med);
+        }
+    }
+
+    public void updateLastTaken() {
+        Medication currentMedication = medicationList.get(cur);
+        currentMedication.lastTaken = TimeUtil.convertDateToTimestamp(Calendar.getInstance());
+        setMedication(currentMedication, currentMedication.name, false);
+    }
 
     public void showDialog(boolean adding) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
@@ -275,6 +270,8 @@ public class MedicationFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         medicationList.remove(cur);
+                        usedIds.remove(currentMedication.id);
+                        alarmScheduler.cancelReminder(getContext(), currentMedication);
                         displayMedication(-1);
                         Toast.makeText(getContext(), currentMedication.name + " deleted from list", Toast.LENGTH_SHORT).show();
                     }
@@ -356,9 +353,13 @@ public class MedicationFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         if (adding) {
+                            med.createId(usedIds);
                             medicationList.add(cur, med);
+                            usedIds.add(med.id);
+                            alarmScheduler.scheduleReminder(getContext(), med);
                         } else {
                             medicationList.set(cur, med);
+                            alarmScheduler.replaceReminder(getContext(), med);
                         }
                         displayMedication(0);
                         Toast.makeText(getContext(), "Medication updated", Toast.LENGTH_SHORT).show();
