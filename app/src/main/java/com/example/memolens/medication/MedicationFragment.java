@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.memolens.CameraFragment;
 import com.example.memolens.HomeFragment;
 import com.example.memolens.Notifications.AlarmScheduler;
 import com.example.memolens.R;
@@ -114,9 +115,9 @@ public class MedicationFragment extends Fragment {
         backMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment homeFragment = new HomeFragment();
+                Fragment camera = new CameraFragment();
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container_view, homeFragment );
+                transaction.replace(R.id.fragment_container_view, camera );
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

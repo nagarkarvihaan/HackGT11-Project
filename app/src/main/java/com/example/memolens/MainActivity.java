@@ -10,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +20,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.memolens.databinding.ActivityMainBinding;
 import com.example.memolens.medication.MedicationFragment;
-
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;

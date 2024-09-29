@@ -7,18 +7,16 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundWhite"
-        tools:context=".CameraActivity">
+        android:background="@color/backgroundWhite">
 
-        <!-- Preview View for CameraX -->
-        <androidx.camera.view.PreviewView
-            android:id="@+id/previewView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/captureButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <androidx.camera.view.PreviewView-->
+<!--            android:id="@+id/previewView"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/captureButton"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <!-- Button to Capture Image -->
         <Button
@@ -30,8 +28,8 @@
             android:backgroundTint="@color/softBlue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/previewView" />
+            app:layout_constraintStart_toStartOf="parent"/>
+<!--            app:layout_constraintTop_toBottomOf="@+id/previewView" -->
 
         <Button
             android:id="@+id/backMain"
@@ -45,6 +43,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
+            android:id="@+id/medicationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -52,7 +51,8 @@
             android:text="@string/medications"
             android:textColor="@color/textGrey"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/previewView"/>
+            app:layout_constraintEnd_toEndOf="parent"/>
+<!--            app:layout_constraintTop_toBottomOf="@+id/previewView"-->
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

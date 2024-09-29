@@ -1,16 +1,18 @@
 package com.example.memolens;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -20,8 +22,10 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
-import com.example.memolens.databinding.ActivityCameraBinding;
+import com.example.memolens.databinding.FragmentCameraBinding;
+import com.example.memolens.medication.MedicationFragment;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import org.json.JSONException;
@@ -38,54 +42,57 @@ import java.nio.file.Files;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraFragment extends Fragment {
 
     private ImageCapture imageCapture;
     private PreviewView previewView;
     private Button captureButton;
-    private Button backButton;
     private TextToSpeech tts;
-    ActivityCameraBinding binding;
+    FragmentCameraBinding binding;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityCameraBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentCameraBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
         // Initialize views
-        previewView = binding.previewView;
+//        previewView = binding.previewView;
         captureButton = binding.captureButton;
-        backButton = binding.backMain;
+        Button medicationButton = binding.medicationButton;
 
         // Initialize Text-to-Speech
-        tts = new TextToSpeech(this, status -> {
+        tts = new TextToSpeech(getContext(), status -> {
             if (status == TextToSpeech.SUCCESS) {
                 tts.setLanguage(Locale.US);
             }
         });
 
-        // Request Camera Permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
-        } else {
-            startCamera();  // Start the camera if permission is granted
-        }
+        // Request Camera Permissions if not granted
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 101);
+//        } else {
+//            startCamera();  // Start the camera if permission is granted
+//        }
 
         // Capture button listener
         captureButton.setOnClickListener(v -> takePicture());
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
-            }
+
+        // Medication button listener
+        medicationButton.setOnClickListener(v -> {
+            Fragment fragment = new MedicationFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
+
+        return view;
     }
 
     private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
 
         cameraProviderFuture.addListener(() -> {
             try {
@@ -94,7 +101,7 @@ public class CameraActivity extends AppCompatActivity {
             } catch (ExecutionException | InterruptedException e) {
                 Log.e("CameraX", "Error initializing camera", e);
             }
-        }, ContextCompat.getMainExecutor(this));
+        }, ContextCompat.getMainExecutor(getContext()));
     }
 
     private void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
@@ -118,7 +125,7 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // Create output file to hold the image
-        File photoFile = new File(getExternalFilesDir(null), System.currentTimeMillis() + "_photo.jpg");
+        File photoFile = new File(getContext().getExternalFilesDir(null), System.currentTimeMillis() + "_photo.jpg");
 
         // Create output options object to hold file and metadata
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
@@ -126,7 +133,7 @@ public class CameraActivity extends AppCompatActivity {
         // Take a picture and save it to the provided file
         imageCapture.takePicture(
                 outputFileOptions,
-                ContextCompat.getMainExecutor(this),
+                ContextCompat.getMainExecutor(getContext()),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
@@ -180,18 +187,16 @@ public class CameraActivity extends AppCompatActivity {
                     in.close();
 
                     // Handle the server response
-                    runOnUiThread(() -> handleServerResponse(response.toString()));
+                    getActivity().runOnUiThread(() -> handleServerResponse(response.toString()));
 
                 } else {
                     Log.e("ServerError", "Server responded with code: " + responseCode);
-                    runOnUiThread(() -> speak("Server error. Please try again later."));
+                    getActivity().runOnUiThread(() -> speak("Server error. Please try again later."));
                 }
 
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
-                runOnUiThread(() -> {
-                    speak("Network or processing error occurred. Please try again.");
-                });
+                getActivity().runOnUiThread(() -> speak("Network or processing error occurred. Please try again."));
             }
         }).start();
     }
@@ -222,11 +227,12 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroyView() {
+        super.onDestroyView();
         if (tts != null) {
             tts.stop();
             tts.shutdown();
         }
-        super.onDestroy();
+        binding = null;  // Clean up binding
     }
 }

@@ -72,7 +72,6 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:nextFocusRight="@id/makeCallButton"
                     android:nextFocusLeft="@id/camera_button">
 
                     <ImageView
@@ -89,31 +88,7 @@
                         android:textColor="@color/black"/>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/makeCallButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@color/softBlue"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:layout_marginHorizontal="5dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:nextFocusLeft="@id/medication_button">
-                   <ImageView
-                       android:layout_width="48dp"
-                       android:layout_height="48dp"
-                       android:src="@drawable/baseline_person_24" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Contacts"
-                        android:textSize="30dp"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

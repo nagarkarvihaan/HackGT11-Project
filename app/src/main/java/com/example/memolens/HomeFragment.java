@@ -31,8 +31,8 @@ public class HomeFragment extends Fragment {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), CameraActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(v.getContext(), CameraActivity.class);
+//                startActivity(intent);
             }
         });
 
