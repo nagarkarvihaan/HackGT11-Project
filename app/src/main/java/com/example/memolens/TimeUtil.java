@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class TimeUtil {
     static final DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm");
@@ -37,7 +38,28 @@ public class TimeUtil {
         }
     }
 
-//    public static Timestamp convertStringToTimestamp() {
-//        Timestamp()
-//    }
+    public static Timestamp convertMilitaryStringToTimestamp(String dateStr) {
+        Calendar cal = Calendar.getInstance();
+        DateFormat militaryDf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date curDate = militaryDf.parse(dateStr.substring(0, 10));
+            Date curTime = timeDf.parse(dateStr.substring(11, 16));
+
+            cal.setTime(curDate);
+
+            Calendar timeCalendar = Calendar.getInstance();
+            timeCalendar.setTime(curTime);
+
+            cal.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
+            cal.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
+        } catch (ParseException e) {
+        }
+        return TimeUtil.convertDateToTimestamp(cal);
+    }
+
+    public static String convertTimestampToMilitaryString(Timestamp ts) {
+        Calendar cal = TimeUtil.convertTimestampToDate(ts);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        return sdf.format(cal.getTime());
+    }
 }

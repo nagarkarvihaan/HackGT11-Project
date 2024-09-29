@@ -1,5 +1,6 @@
 package com.example.memolens.medication;
 
+import com.example.memolens.TimeUtil;
 import com.google.firebase.Timestamp;
 
 import java.util.*;
@@ -14,7 +15,7 @@ public class Medication {
         instructions = (String) map.get("instructions");
         name = (String) map.get("name");
         interval = (Long) map.get("interval");
-        lastTaken = (Timestamp) map.get("last-taken");
+        lastTaken = TimeUtil.convertMilitaryStringToTimestamp((String) map.get("last_taken"));
     }
 
     public Map<String, Object> getMap() {
@@ -23,7 +24,7 @@ public class Medication {
         map.put("instructions", instructions);
         map.put("name", name);
         map.put("interval", interval);
-        map.put("last-taken", lastTaken);
+        map.put("last_taken", TimeUtil.convertTimestampToMilitaryString(lastTaken));
         return map;
     }
 
@@ -43,7 +44,7 @@ public class Medication {
         map.put("instructions", i);
         map.put("name", n);
         map.put("interval", inter);
-        map.put("last-taken", last);
+        map.put("last_taken", last);
         return new Medication(map);
     }
 }
