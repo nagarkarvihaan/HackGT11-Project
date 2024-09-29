@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -23,8 +25,8 @@ public class HomeFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
 
-        Button cameraButton = binding.cameraButton;
-        Button medicationButton = binding.medicationButton;
+        LinearLayout cameraButton = binding.cameraButton;
+        LinearLayout medicationButton = binding.medicationButton;
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +46,29 @@ public class HomeFragment extends Fragment {
                 transaction.commit();
             }
         });
+
+        cameraButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.softBlueFocused));
+                } else {
+                    v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.softBlue));
+                }
+            }
+        });
+
+        medicationButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.softBlueFocused));
+                } else {
+                    v.setBackgroundTintList(ContextCompat.getColorStateList(v.getContext(), R.color.softBlue));
+                }
+            }
+        });
+
         return binding.getRoot();
     }
 }
