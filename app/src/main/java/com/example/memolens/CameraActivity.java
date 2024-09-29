@@ -58,10 +58,20 @@ public class CameraActivity extends AppCompatActivity {
         captureButton = binding.captureButton;
         backButton = binding.backMain;
 
-        // Initialize Text-to-Speech
+        // Initialize Text-to-Speech (Updated)
         tts = new TextToSpeech(this, status -> {
             if (status == TextToSpeech.SUCCESS) {
-                tts.setLanguage(Locale.US);
+                int result = tts.setLanguage(Locale.US);
+                // Check if the language is supported (Updated)
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "The specified language is not supported.");
+                    // Provide feedback to the user
+                    speak("Text-to-Speech language is not supported.");
+                }
+            } else {
+                Log.e("TTS", "Initialization failed.");
+                // Provide feedback to the user
+                speak("Text-to-Speech initialization failed.");
             }
         });
 
@@ -74,7 +84,12 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // Capture button listener
-        captureButton.setOnClickListener(v -> takePicture());
+        captureButton.setOnClickListener(v -> {
+            Log.d("CameraActivity", "Capture button clicked.");
+            takePicture();
+        });
+
+        // Back button listener
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +97,10 @@ public class CameraActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Logging for debugging
+        Log.d("CameraActivity", "Capture Button: " + captureButton);
+        Log.d("CameraActivity", "Back Button: " + backButton);
     }
 
     private void startCamera() {
@@ -100,10 +119,11 @@ public class CameraActivity extends AppCompatActivity {
     private void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
         Preview preview = new Preview.Builder().build();
 
-        CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        /*CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)  // Use front-facing camera
                 .build();
-
+        */
+        CameraSelector cameraSelector = new CameraSelector.Builder().build();  // Use default camera
         imageCapture = new ImageCapture.Builder().build(); // Initialize ImageCapture
 
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
@@ -155,7 +175,7 @@ public class CameraActivity extends AppCompatActivity {
                 jsonParam.put("image", base64Image);
 
                 // Setup the HTTP connection
-                URL url = new URL("http://your-server-ip:5000/analyze");  // Replace with your Flask server URL
+                URL url = new URL("http://10.91.69.68:5000/analyze");  // Replace with your Flask server URL
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");

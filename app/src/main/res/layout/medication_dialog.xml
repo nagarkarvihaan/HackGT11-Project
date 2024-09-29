@@ -36,7 +36,11 @@
             android:layout_marginHorizontal="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editMedicationTitle">
+            app:layout_constraintTop_toBottomOf="@+id/editMedicationTitle"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusRight="@id/instructions"
+            android:nextFocusLeft="@id/deleteMedication">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -52,7 +56,11 @@
             android:layout_marginHorizontal="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name">
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusRight="@id/dosage"
+            android:nextFocusLeft="@id/name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -76,13 +84,17 @@
                 android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusRight="@id/interval"
+                android:nextFocusLeft="@id/instructions">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Dosage"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -92,7 +104,11 @@
                 android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusRight="@id/lastTaken"
+                android:nextFocusLeft="@id/dosage">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -111,7 +127,10 @@
             android:layout_marginHorizontal="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/interval">
+            app:layout_constraintTop_toBottomOf="@+id/interval"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/interval">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -127,7 +146,7 @@
 
     <ImageButton
         android:id="@+id/deleteMedication"
-        android:layout_width="40dp"
+        android:layout_width="48dp"
         android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:backgroundTint="@color/backgroundWhite"
@@ -135,7 +154,11 @@
         android:padding="8dp"
         android:src="@drawable/baseline_delete_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusRight="@id/name"
+        android:nextFocusLeft="@id/saveMedication"/>
 
     <Button
         android:id="@+id/saveMedication"
@@ -146,20 +169,27 @@
         android:text="Save"
         android:textColor="@color/textGrey"
         app:layout_constraintEnd_toStartOf="@+id/deleteMedication"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusRight="@id/deleteMedication"
+        android:nextFocusLeft="@id/backButton"/>
 
     <ImageButton
         android:id="@+id/backButton"
         android:contentDescription="back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="0dp"
         android:backgroundTint="@color/backgroundWhite"
         android:padding="8dp"
         android:src="@drawable/baseline_arrow_back_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusRight="@id/saveMedication"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
